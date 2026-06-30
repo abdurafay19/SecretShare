@@ -109,7 +109,13 @@ export default function CreateSecret() {
                     ttl,
                     views
                 });
-
+            
+            if (!response.ok) {
+                const text = await response.text();
+                alert(text);
+                throw new Error(text);
+            }
+            
             // Export key
             const exportedKey =
                 await exportKey(key);
