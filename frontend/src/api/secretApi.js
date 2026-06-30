@@ -1,8 +1,9 @@
-const API_BASE = "http://localhost:8000/api";
+const API_URL =
+    import.meta.env.VITE_API_URL;
 
 export async function createSecret(data) {
     const response = await fetch(
-        `${API_BASE}/secrets`,
+        `${API_URL}/secrets`,
         {
             method: "POST",
             headers: {
@@ -21,7 +22,7 @@ export async function createSecret(data) {
 
 export async function getSecret(id) {
     const response = await fetch(
-        `${API_BASE}/secrets/${id}`
+        `${API_URL}/secrets/${id}`
     );
 
     if (!response.ok) {
