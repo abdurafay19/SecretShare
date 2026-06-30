@@ -3,7 +3,7 @@ const API_URL =
 
 export async function createSecret(data) {
     const response = await fetch(
-        `${API_URL}/secrets`,
+        `${API_URL}/api/secrets`,
         {
             method: "POST",
             headers: {
@@ -22,7 +22,7 @@ export async function createSecret(data) {
 
 export async function getSecret(id) {
     const response = await fetch(
-        `${API_URL}/secrets/${id}`
+        `${API_URL}/api/secrets/${id}`
     );
 
     if (!response.ok) {

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.secrets import router as secret_router
 
 app = FastAPI(
-    title="VaultDrop"
+    title="SecretShare"
 )
 
 app.add_middleware(
