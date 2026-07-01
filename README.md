@@ -1,358 +1,249 @@
 # SecretShare
 
-A secure, end-to-end encrypted one-time secret sharing platform built with React, FastAPI, and Redis.
+<div align="center">
 
-SecretShare allows users to share sensitive information through a link that can only be viewed a limited number of times and automatically expires after a configurable duration. The server never sees or stores plaintext secrets. All encryption and decryption occur locally in the user's browser.
+### Secure • End-to-End Encrypted • One-Time Secret Sharing
+
+Share sensitive information through encrypted links that automatically expire after a configurable number of views or a specified duration.
+
+<br>
+
+![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react\&logoColor=white)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi\&logoColor=white)
+![Redis](https://img.shields.io/badge/Database-Redis-DC382D?logo=redis\&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.13+-3776AB?logo=python\&logoColor=white)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)
+![Railway](https://img.shields.io/badge/Backend-Railway-0B0D0E)
+
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Portfolio Project](https://img.shields.io/badge/Portfolio-Project-blue)
+![Security](https://img.shields.io/badge/Encryption-AES--GCM-important)
+
+</div>
 
 ---
 
-## Features
+## Live Demo
 
-### End-to-End Encryption
+[SecretShare](https://secret-share-green.vercel.app/)
 
-Secrets are encrypted in the browser using AES-GCM before being transmitted to the server.
+---
 
-* Plaintext never leaves the user's device.
-* The server only stores encrypted ciphertext.
-* Decryption keys are never sent to the backend.
+## Why SecretShare?
 
-### One-Time Secret Sharing
+Traditional messaging platforms store your messages and often have access to plaintext content.
 
-Secrets can be configured to self-destruct after a specified number of views.
+SecretShare takes a different approach:
 
-Examples:
+* Encryption happens entirely in your browser.
+* Decryption happens entirely in your browser.
+* Encryption keys never reach the server.
+* Secrets can automatically expire.
+* Secrets can self-destruct after a limited number of views.
 
-* View once
-* View twice
-* Up to 10 views
+The backend stores only encrypted ciphertext.
 
-### Automatic Expiration
+Even if the database is compromised, attackers cannot recover the original secret without the encryption key.
 
-Secrets can automatically expire after a selected duration.
+---
 
-Supported durations:
+## Key Features
 
-* 1 minute
-* 5 minutes
-* 15 minutes
-* 1 hour
-* 6 hours
-* 1 day
-* 1 week
+### 🔒 End-to-End Encryption
 
-### Client-Side Key Management
+Uses AES-GCM through the browser's Web Crypto API.
 
-Encryption keys are embedded in the URL fragment:
+### 💣 Self-Destructing Secrets
+
+Automatically delete secrets after:
+
+* 1 view
+* Multiple views
+* Configurable limits
+
+### ⏳ Automatic Expiration
+
+Expiration options include:
+
+* Minutes
+* Hours
+* Days
+* Weeks
+
+### 🔑 Client-Side Key Storage
+
+Encryption keys are stored in the URL fragment:
 
 ```text
-https://example.com/s/SECRET_ID#ENCRYPTION_KEY
+https://example.com/s/secret_id#encryption_key
 ```
 
-The fragment portion (`#ENCRYPTION_KEY`) is never transmitted to the server, ensuring that the backend cannot decrypt stored data.
+URL fragments are never sent to the server.
 
-### Mobile Friendly
+### 📱 Mobile Friendly
 
-The interface is responsive and works on:
+Responsive design supporting:
 
-* Desktop
+* Phones
 * Tablets
-* Mobile devices
+* Desktops
 
-### Modern Architecture
+### ⚡ Fast Retrieval
 
-* React Frontend
-* FastAPI Backend
-* Redis Storage
-* Vercel Deployment
-* Railway Deployment
+Redis provides near-instant secret access.
 
 ---
 
-## How It Works
-
-### Secret Creation
-
-1. User enters a secret.
-2. Browser generates a random AES-GCM key.
-3. Secret is encrypted locally.
-4. Ciphertext is uploaded to the backend.
-5. Backend stores ciphertext in Redis.
-6. Backend returns a unique secret ID.
-7. Browser creates a shareable URL:
+## Architecture
 
 ```text
-https://secretshare.example/s/SECRET_ID#KEY
+┌───────────────┐
+│     User      │
+└───────┬───────┘
+        │
+        ▼
+┌──────────────────┐
+│ React Frontend   │
+│ Web Crypto API   │
+└───────┬──────────┘
+        │
+ Encrypt│Decrypt
+        │
+        ▼
+┌──────────────────┐
+│ FastAPI Backend  │
+└───────┬──────────┘
+        │
+        ▼
+┌──────────────────┐
+│      Redis       │
+└──────────────────┘
 ```
-
-### Secret Retrieval
-
-1. Recipient opens the URL.
-2. Browser extracts the key from the URL fragment.
-3. Browser requests encrypted data from the backend.
-4. Browser decrypts the secret locally.
-5. Secret is displayed.
-6. View count is reduced.
-7. Secret is deleted when:
-
-   * View limit is reached, or
-   * Expiration time is exceeded.
 
 ---
 
-## Security Model
+## Security Design
 
-### What the Server Knows
-
-The backend can see:
-
-* Ciphertext
-* Nonce
-* Secret ID
-* Expiration settings
-* View count
-
-### What the Server Never Knows
-
-The backend never sees:
-
-* Plaintext secrets
-* Encryption keys
-
-### URL Fragment Security
-
-The encryption key is stored after the `#` symbol:
-
-```text
-https://example.com/s/id#key
-```
-
-Browsers do not send URL fragments to servers.
-
-This means:
-
-* Railway never receives the key.
-* Redis never stores the key.
-* FastAPI never sees the key.
+| Component       | Can See Plaintext? |
+| --------------- | ------------------ |
+| Browser         | ✅ Yes              |
+| FastAPI Backend | ❌ No               |
+| Redis Database  | ❌ No               |
+| Railway Hosting | ❌ No               |
+| Vercel Hosting  | ❌ No               |
 
 ---
 
-## Technology Stack
+## Tech Stack
 
 ### Frontend
 
 * React
 * Vite
-* Web Crypto API
 * React Router
+* Web Crypto API
 
 ### Backend
 
 * FastAPI
-* Python
-* Redis
 * Uvicorn
+* Redis
 
-### Infrastructure
+### Deployment
 
-* Railway
 * Vercel
+* Railway
 
 ---
 
-## Project Structure
+## Performance Goals
 
-```text
-SecretShare/
-│
-├── backend/
-│   ├── app/
-│   │   ├── routes/
-│   │   │   └── secrets.py
-│   │   │
-│   │   ├── schemas/
-│   │   │   └── secret.py
-│   │   │
-│   │   ├── services/
-│   │   │   └── redis_scripts.py
-│   │   │
-│   │   ├── redis_client.py
-│   │   └── main.py
-│   │
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── crypto/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   │
-│   ├── package.json
-│   └── vite.config.js
-│
-└── README.md
-```
+* Client-side encryption
+* Minimal backend processing
+* Redis-backed storage
+* Near-instant retrieval
+* Mobile-first experience
 
 ---
 
-## Local Development
+## Roadmap
 
-### Backend
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Start Redis:
-
-```bash
-redis-server
-```
-
-Run FastAPI:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Backend runs on:
-
-```text
-http://localhost:8000
-```
-
----
-
-### Frontend
-
-Navigate to frontend:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create `.env`:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-Run development server:
-
-```bash
-npm run dev
-```
-
-Frontend runs on:
-
-```text
-http://localhost:5173
-```
-
----
-
-## Deployment
-
-### Backend
-
-Deploy FastAPI to Railway.
-
-Required environment variables:
-
-```env
-REDIS_URL=your_redis_connection_string
-```
-
-### Frontend
-
-Deploy React application to Vercel.
-
-Required environment variables:
-
-```env
-VITE_API_URL=https://your-backend.up.railway.app
-```
-
-### Vercel Routing
-
-Create:
-
-```text
-frontend/vercel.json
-```
-
-```json
-{
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
-}
-```
-
-This enables React Router support for secret URLs.
-
----
-
-## Future Improvements
-
-### Planned Features
-
-* Password-protected secrets
-* Split-key mode
-* File sharing
-* QR code sharing
-* Anonymous burn-after-read notes
-* Secret access audit logs
-* Share expiration countdown
-* Dark mode
-* Secret folders
-* Optional Shamir Secret Sharing
-
----
-
-## Educational Goals
-
-This project demonstrates:
+### Completed
 
 * End-to-end encryption
-* Browser cryptography
-* Secure key handling
-* FastAPI backend development
-* Redis integration
-* React application architecture
+* One-time secret retrieval
+* Expiration system
+* View limits
+* Mobile-responsive UI
 * Cloud deployment
-* Secure system design
+
+### Planned
+
+* Password-protected secrets
+* Split-key sharing mode
+* File sharing
+* QR-code sharing
+* Secret folders
+* Access analytics
+* Temporary encrypted notes
+* Shamir Secret Sharing
+* Progressive Web App (PWA)
 
 ---
 
-## Disclaimer
+## Learning Outcomes
 
-SecretShare is a portfolio and educational project designed to demonstrate secure software engineering concepts. It should be independently audited before use in high-security production environments.
+This project explores:
+
+* Applied Cryptography
+* Secure Software Design
+* Client-Side Encryption
+* FastAPI Development
+* Redis Data Management
+* React Frontend Architecture
+* Cloud Deployment
+* End-to-End Encryption Systems
+
+---
+
+## Contributing
+
+Contributions, feature requests, and bug reports are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a pull request.
+
+---
+
+## License
+
+MIT License
+
+Feel free to use, modify, and learn from this project.
 
 ---
 
 ## Author
 
-Abdul Rafay
+**Abdul Rafay**
 
-Computer Science Student | Software Developer | Systems Enthusiast
+Computer Science Student at ITU
+
+Interested in:
+
+* Systems Programming
+* Networking
+* Software Architecture
+
+GitHub: https://github.com/abdurafay19
+
+---
+
+<div align="center">
+
+Built with React, FastAPI, Redis, and curiosity.
+
+</div>
